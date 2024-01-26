@@ -1,0 +1,11 @@
+---
+- name: Package manager choosing
+  ansible.builtin.include_tasks:
+    file: "{{ lookup('first_found', params) }}"
+    apply:
+      tags: [install]
+  vars:
+    params:
+      files:
+        - "install/{{ ansible_pkg_mgr }}.yml"
+  tags: [install]

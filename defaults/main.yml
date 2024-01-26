@@ -1,0 +1,3 @@
+---
+nginx_user_name: ubuntu
+nginx_ready_delay: 5

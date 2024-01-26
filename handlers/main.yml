@@ -1,0 +1,12 @@
+---
+# handlers file for lighthouse
+- name: Start nginx
+  become: true
+  ansible.builtin.command: nginx
+  changed_when: false
+- name: Restart nginx
+  become: true
+  ansible.builtin.services:
+    name: nginx
+    state: restarted
+  changed_when: false

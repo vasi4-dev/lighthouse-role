@@ -1,0 +1,50 @@
+---
+# tasks file for lighthouse
+- name: NGINX - installation
+  become: true
+  ansible.builtin.apt:
+    name: nginx
+    state: present
+  notify: Start nginx
+  tags: [install]
+- name: NGINX - config
+  become: true
+  ansible.builtin.template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+    mode: "0644"
+  notify: Restart nginx
+  tags: [install]
+- name: Wait for webserver become ready
+  ansible.builtin.wait_for:
+    port: "80"
+    delay: "{{ nginx_ready_delay }}"
+  tags: [always]
+- name: Lighthouse Git Setup
+  become: true
+  ansible.builtin.apt:
+    name: git
+    state: present
+  tags: [install]
+- name: Lighthouse - Git Clone
+  become: true
+  ansible.builtin.git:
+    repo: "{{ lighthouse_vcs }}"
+    version: master
+    dest: "{{ lighthouse_location_dir }}"
+  tags: [install]
+- name: Lighthouse - config
+  become: true
+  ansible.builtin.template:
+    src: lighthouse.conf.j2
+    dest: /etc/nginx/conf.d/default.conf
+    mode: "0644"
+  notify: Restart nginx
+  tags: [config]
+- name: Wait for webserver become ready
+  ansible.builtin.wait_for:
+    port: 80
+    delay: "{{ nginx_ready_delay }}"
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
+  tags: [config]

@@ -1,0 +1,4 @@
+---
+# vars file for lighthouse
+lighthouse_location_dir: "/usr/share/nginx/html/lighthouse"
+lighthouse_vcs: "https://github.com/VKCOM/lighthouse.git"
